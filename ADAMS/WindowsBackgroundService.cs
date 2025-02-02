@@ -11,7 +11,6 @@ namespace ADAMS
         {
             _logger = logger;
             _configuration = configuration;
-
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -34,8 +33,6 @@ namespace ADAMS
                 {
                     _logger.LogError(ex.Message);
                 }
-
-                await Task.Delay(60000, stoppingToken);
             }
         }
 
