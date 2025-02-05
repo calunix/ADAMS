@@ -52,7 +52,7 @@ namespace ADAMS
 
             if (unparsedStartTime == null || unparsedStartTime.Length != 4)
             {
-                _logger.LogWarning($"Invalid TimeTostart in appsettings.json; defaulting to {startTime}");
+                _logger.LogWarning($"Invalid TimeToStart in appsettings.json; defaulting to {startTime}");
             }
             else
             {
