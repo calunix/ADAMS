@@ -63,7 +63,7 @@ namespace ADAMS
                     if (thresholds[j] == timeToExpire.Days)
                     {
                         _logger.LogInformation($"Emailing {_users[i].EmailAddress}; password expires in {thresholds[j]} {noun}");
-                        //mailClient.SendNotification(_users[i].EmailAddress, expiry.ToString(), timeToExpire);
+                        mailClient.SendNotification(_users[i].EmailAddress, expiry.ToString(), timeToExpire);
                         break;
                     }
                 }
