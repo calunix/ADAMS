@@ -2,27 +2,21 @@ using Microsoft.Extensions.Configuration;
 
 namespace ADAMS
 {
-    public class WindowsBackgroundService : BackgroundService
+    public sealed class WindowsBackgroundService (
+        AccountMaintenanceWorker amw,
+        ILogger<WindowsBackgroundService> logger,
+        IConfiguration configuration) : BackgroundService
     {
-        private readonly ILogger<WindowsBackgroundService> _logger;
-        private readonly IConfiguration _configuration;
-
-        public WindowsBackgroundService(ILogger<WindowsBackgroundService> logger, IConfiguration configuration)
-        {
-            _logger = logger;
-            _configuration = configuration;
-        }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                if (_logger.IsEnabled(LogLevel.Information))
+                if (logger.IsEnabled(LogLevel.Information))
                 {
-                    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                    logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 }
 
-                AccountMaintenanceWorker amw = new(_configuration, _logger);
                 await Wait(stoppingToken);
 
                 try
@@ -31,7 +25,7 @@ namespace ADAMS
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex.Message);
+                    logger.LogError(ex.Message);
                 }
             }
         }
@@ -43,7 +37,7 @@ namespace ADAMS
 
         private TimeSpan TimeUntilJob()
         {
-            string? unparsedStartTime = _configuration.GetValue<string>("TimeToStart");
+            string? unparsedStartTime = configuration.GetValue<string>("TimeToStart");
             const int DefaultStartHours = 0;
             const int DefaultStartMinutes = 0;
             TimeOnly startTime = new(DefaultStartHours, DefaultStartMinutes);
@@ -52,12 +46,12 @@ namespace ADAMS
 
             if (unparsedStartTime == null || unparsedStartTime.Length != 4)
             {
-                _logger.LogWarning($"Invalid TimeToStart in appsettings.json; defaulting to {startTime}");
+                logger.LogWarning($"Invalid TimeToStart in appsettings.json; defaulting to {startTime}");
             }
             else
             {
                 startTime = ParseTimeToStart(unparsedStartTime);
-                _logger.LogInformation($"Configured time to start: {startTime}");
+                logger.LogInformation($"Configured time to start: {startTime}");
             }
 
             if (currTime.TimeOfDay < startTime.ToTimeSpan())
@@ -69,7 +63,7 @@ namespace ADAMS
                 scheduledTime = DateTime.Today.AddDays(1.0).Add(startTime.ToTimeSpan());
             }
 
-            _logger.LogInformation($"Next scheduled job at: {scheduledTime}");
+            logger.LogInformation($"Next scheduled job at: {scheduledTime}");
             return scheduledTime - currTime;
 
             static TimeOnly ParseTimeToStart(string unparsedTime)

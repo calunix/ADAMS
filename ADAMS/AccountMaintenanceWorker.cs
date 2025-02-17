@@ -11,7 +11,7 @@ using System.DirectoryServices;
 
 namespace ADAMS
 {
-    sealed internal class AccountMaintenanceWorker
+    public sealed class AccountMaintenanceWorker
     {
         private readonly IConfiguration _config;
         private readonly ILogger _logger;
@@ -63,7 +63,7 @@ namespace ADAMS
                     if (thresholds[j] == timeToExpire.Days)
                     {
                         _logger.LogInformation($"Emailing {_users[i].EmailAddress}; password expires in {thresholds[j]} {noun}");
-                        mailClient.SendNotification(_users[i].EmailAddress, expiry.ToString(), timeToExpire);
+                        //mailClient.SendNotification(_users[i].EmailAddress, expiry.ToString(), timeToExpire);
                         break;
                     }
                 }
