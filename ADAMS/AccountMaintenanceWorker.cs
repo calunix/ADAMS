@@ -11,7 +11,7 @@ using System.DirectoryServices;
 
 namespace ADAMS
 {
-    sealed internal class AccountMaintenanceWorker
+    public sealed class AccountMaintenanceWorker
     {
         private readonly IConfiguration _config;
         private readonly ILogger _logger;
