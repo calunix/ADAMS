@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Text;
@@ -41,6 +42,7 @@ namespace ADAMS.Classes
                 ps = new();
                 up = new(_domainContexts[i]);
                 ps.QueryFilter = up;
+                ((DirectorySearcher)ps.GetUnderlyingSearcher()).SearchScope = SearchScope.OneLevel;
                 results = ps.FindAll();
                 foreach (UserPrincipal user in results) { users.Add(user); }
                 up.Dispose();
